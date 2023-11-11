@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Upload</title>
+</head>
+<body>
+
+    <h1>Upload Your Resume</h1>
+
+    <?php
+    // Define the directory where resumes will be uploaded
+    $uploadDirectory = 'uploads/';
+
+    // Check if the form is submitted
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Check if a file is selected
+        if (isset($_FILES['resume']) && $_FILES['resume']['error'] === UPLOAD_ERR_OK) {
+            $allowedExtensions = ['pdf'];
+            $tempFile = $_FILES['resume']['tmp_name'];
+            $originalFileName = $_FILES['resume']['name'];
+            $extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+
+            // Check if the file has a valid extension
+            if (in_array($extension, $allowedExtensions)) {
+                // Generate a unique name for the file
+                $newFileName = uniqid('resume_', true) . '.' . $extension;
+                $destination = $uploadDirectory . $newFileName;
+
+                // Move the file to the upload directory
+                if (move_uploaded_file($tempFile, $destination)) {
+                    echo '<p style="color: green;">Resume uploaded successfully!</p>';
+                } else {
+                    echo '<p style="color: red;">Error uploading the file. Please try again.</p>';
+                }
+            } else {
+                echo '<p style="color: red;">Invalid file format. Please upload a PDF file.</p>';
+            }
+        } else {
+            echo '<p style="color: red;">Please select a file to upload.</p>';
+        }
+    }
+    ?>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <label for="resume">Choose a PDF file:</label>
+        <input type="file" name="resume" id="resume" accept=".pdf" required>
+        <br>
+        <input type="submit" value="Upload Resume">
+    </form>
+
+</body>
+</html>

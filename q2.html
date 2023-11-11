@@ -1,0 +1,30 @@
+<?php
+session_start();
+
+// Check if the session variable is set, if not, initialize it to 0
+if (!isset($_SESSION['refreshCount'])) {
+    $_SESSION['refreshCount'] = 0;
+}
+
+// Increment the refresh count
+$_SESSION['refreshCount']++;
+
+// Display the refresh count
+$refreshCount = $_SESSION['refreshCount'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refresh Count Example</title>
+</head>
+<body>
+
+    <h1>Page Refresh Count</h1>
+
+    <p>This page has been refreshed <strong><?php echo $refreshCount; ?></strong> times.</p>
+
+</body>
+</html>

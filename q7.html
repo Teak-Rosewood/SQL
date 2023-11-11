@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page with Cookies</title>
+</head>
+<body>
+
+<?php
+// Function to set a cookie with the user's name and last access date
+function setCookieData() {
+    $userName = isset($_COOKIE['username']) ? $_COOKIE['username'] : "Guest";
+    $lastAccessDate = isset($_COOKIE['last_access']) ? $_COOKIE['last_access'] : date("Y-m-d H:i:s");
+
+    if (isset($_POST['submit'])) {
+        // Update cookies with user input
+        $userName = $_POST['username'];
+        $lastAccessDate = date("Y-m-d H:i:s");
+        setcookie('username', $userName, time() + (86400 * 30), "/"); // 30 days expiration
+        setcookie('last_access', $lastAccessDate, time() + (86400 * 30), "/"); // 30 days expiration
+    }
+
+    return array('username' => $userName, 'last_access' => $lastAccessDate);
+}
+
+$userData = setCookieData();
+?>
+
+    <div>
+        <h1>Welcome <?php echo $userData['username']; ?>!</h1>
+        <p>Your last access was on <?php echo $userData['last_access']; ?>.</p>
+    </div>
+
+    <form method="post" action="">
+        <label for="username">Enter your name: </label>
+        <input type="text" id="username" name="username" required>
+        <input type="submit" name="submit" value="Submit">
+    </form>
+
+</body>
+</html>

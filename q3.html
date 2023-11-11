@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+    <h1>Employee Management</h1>
+
+    <form id="searchForm">
+        <label for="employeeId">Enter Employee ID:</label>
+        <input type="text" id="employeeId" name="employeeId" required>
+        <button type="button" onclick="searchEmployee()">Search</button>
+    </form>
+
+    <div id="resultContainer"></div>
+
+    <h2>Add Employee</h2>
+    <form id="addForm">
+        <label for="newEmployeeId">Employee ID:</label>
+        <input type="text" id="newEmployeeId" name="newEmployeeId" required>
+        <label for="newEmployeeName">Employee Name:</label>
+        <input type="text" id="newEmployeeName" name="newEmployeeName" required>
+        <label for="newEmployeePosition">Employee Position:</label>
+        <input type="text" id="newEmployeePosition" name="newEmployeePosition" required>
+        <label for="newEmployeeDepartment">Employee Department:</label>
+        <input type="text" id="newEmployeeDepartment" name="newEmployeeDepartment" required>
+        <button type="button" onclick="addEmployee()">Add Employee</button>
+    </form>
+
+    <script>
+        function searchEmployee() {
+            var employeeId = $('#employeeId').val();
+
+            $.ajax({
+                url: 'search_employee.php',
+                method: 'POST',
+                data: { employeeId: employeeId },
+                success: function(response) {
+                    $('#resultContainer').html(response);
+                },
+                error: function() {
+                    alert('Error in the request.');
+                }
+            });
+        }
+
+        function addEmployee() {
+            var newEmployeeId = $('#newEmployeeId').val();
+            var newEmployeeName = $('#newEmployeeName').val();
+            var newEmployeePosition = $('#newEmployeePosition').val();
+            var newEmployeeDepartment = $('#newEmployeeDepartment').val();
+
+            $.ajax({
+                url: 'add_employee.php',
+                method: 'POST',
+                data: {
+                    newEmployeeId: newEmployeeId,
+                    newEmployeeName: newEmployeeName,
+                    newEmployeePosition: newEmployeePosition,
+                    newEmployeeDepartment: newEmployeeDepartment
+                },
+                success: function(response) {
+                    alert(response);
+                },
+                error: function() {
+                    alert('Error in the request.');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Sample employee data (replace this with your actual data source)
+    $employeeData = [
+        101 => ['name' => 'John Doe', 'position' => 'Software Engineer', 'department' => 'IT'],
+        102 => ['name' => 'Jane Smith', 'position' => 'HR Manager', 'department' => 'Human Resources'],
+        // Add more employee data as needed
+    ];
+
+    $newEmployeeId = $_POST['newEmployeeId'];
+    $newEmployeeName = $_POST['newEmployeeName'];
+    $newEmployeePosition = $_POST['newEmployeePosition'];
+    $newEmployeeDepartment = $_POST['newEmployeeDepartment'];
+
+    // Check if the employee ID already exists
+    if (array_key_exists($newEmployeeId, $employeeData)) {
+        echo 'Employee with the provided ID already exists.';
+    } else {
+        // Add the new employee to the data source
+        $employeeData[$newEmployeeId] = [
+            'name' => $newEmployeeName,
+            'position' => $newEmployeePosition,
+            'department' => $newEmployeeDepartment
+        ];
+
+        echo 'Employee added successfully!';
+    }
+}
+?>
